@@ -64,4 +64,221 @@ public class Main extends Application {
     	
     }
     
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+    
+    	Stage secStage = new Stage();
+    	GridPane layout2 = new GridPane();
+    	Scene scene2 = new Scene(layout2, Params.world_width * 10, Params.world_height * 10);
+    	
+    	secStage.setScene(scene2);
+    	secStage.show();
+    	
+    	/*
+    	try {			
+
+			grid.setGridLinesVisible(true);
+
+			Scene scene2 = new Scene(grid, 500, 500);
+			secStage.setScene(scen,e2);
+			
+			secStage.show();
+			
+			// Paints the icons.
+			Painter.paint();
+			
+		} 
+    	
+    	catch(Exception e) {
+			e.printStackTrace();		
+		}
+    	*/
+    	
+    	primaryStage.setTitle("Critters GUI");
+    	
+    	Button show = new Button();
+    	show.setText("show");
+    	Button step = new Button();
+    	step.setText("step");
+    	Button seed = new Button();
+    	seed.setText("seed");
+    	Button make = new Button();
+    	make.setText("make");
+    	Button stats = new Button();
+    	stats.setText("stats");
+    	
+    	TextField stepNum = new TextField();
+    	
+    	TextField makeType = new TextField();
+    	makeType.setPrefWidth(75);
+    	TextField makeNum = new TextField();
+    	makeNum.setPrefWidth(75);
+
+    	TextField seedNum = new TextField();
+    	
+    	TextField statsType = new TextField();
+    	
+    	
+    	show.setOnAction(new EventHandler<ActionEvent>(){
+    			
+    		@Override
+    		public void handle(ActionEvent event){
+    			//System.out.println("HORRAY!!");
+    			
+    			Critter.displayWorld();
+    			
+    		}
+    		
+    	});
+    	
+    	step.setOnAction(new EventHandler<ActionEvent>(){
+			
+    		@Override
+    		public void handle(ActionEvent event){
+    			
+    			int num = 0;
+        		String input = stepNum.getText();
+        		
+        		try{
+        			num = Integer.parseInt(input);
+        		}
+        		
+        		catch(Exception e){
+        			Critter.worldTimeStep();
+        		}
+        		
+        		for(int i = 0; i < num; i++){
+        			Critter.worldTimeStep();
+        		}
+    			
+    		}
+    		
+    	});
+    	
+    	seed.setOnAction(new EventHandler<ActionEvent>(){
+			
+    		
+    		@Override
+    		public void handle(ActionEvent event){
+    			
+        		int num = 0;
+        		String input = seedNum.getText();
+        		
+        		try{
+        			num = Integer.parseInt(input);
+        			
+        			if(num < 0) throw new Exception();
+        			
+        			Critter.setSeed(num);
+        			
+        		}
+        		
+        		catch(Exception e){
+        			
+        		}
+        		
+    		}
+    		
+    	});
+    	
+    	make.setOnAction(new EventHandler<ActionEvent>(){
+			
+    		@Override
+    		public void handle(ActionEvent event){
+    			
+    		
+	    		int num = 0;
+	    		String className = makeType.getText();
+	    		String number = makeNum.getText();
+	    		
+	    		try{
+	    			num = Integer.parseInt(number);
+	    			
+	    			if(num < 0) throw new Exception();
+	    			
+	        		if(num == 0)
+	        			Critter.makeCritter(className.toString());
+	        		else{
+	        			for(int i = 0; i < num; i++)
+	            			Critter.makeCritter(className.toString());
+	        		}
+	        		
+	    		}
+	    		
+	    		catch(Exception e){
+	    			
+	    		}
+    		}
+    		
+    	});
+    	
+    	stats.setOnAction(new EventHandler<ActionEvent>(){
+			
+    		@Override
+    		public void handle(ActionEvent event){
+    			
+    			try{
+    				String className = statsType.getText();
+    				
+    				List<Critter> result = new ArrayList<Critter>();
+            		result = Critter.getInstances(className);
+            		
+            		Class<?> claz = Class.forName(myPackage + "." + className);
+            		Method method = claz.getMethod("runStats", List.class);
+            		method.invoke(claz, result);
+    				
+    			}
+    			
+    			catch(Exception e){
+    				
+    			}
+    			
+    		}
+    		
+    	});
+    	
+    	Pane layout = new Pane();
+    	//layout.getChildren().addAll(show, step, seed, make, stats);
+    	
+    	show.setLayoutX(50);
+    	show.setLayoutY(50);
+    	
+    	stepNum.setLayoutX(150);
+    	stepNum.setLayoutY(100);
+    	
+    	step.setLayoutX(50);
+    	step.setLayoutY(100);
+    	
+    	seed.setLayoutX(50);
+    	seed.setLayoutY(150);
+    	
+    	seedNum.setLayoutX(150);
+    	seedNum.setLayoutY(150);
+    	
+    	make.setLayoutX(50);
+    	make.setLayoutY(200);
+    	
+    	makeType.setLayoutX(150);
+    	makeType.setLayoutY(200);
+    	
+    	makeNum.setLayoutX(250);
+    	makeNum.setLayoutY(200);
+    	
+    	stats.setLayoutX(50);
+    	stats.setLayoutY(250);
+    	
+    	statsType.setLayoutX(150);
+    	statsType.setLayoutY(250);
+    	
+    	
+    	layout.getChildren().addAll(show, step, seed, make, stats, stepNum, makeType,
+    	makeNum, seedNum, statsType);
+    	
+    	Scene scene = new Scene(layout, 500, 500);
+    	primaryStage.setScene(scene);
+    	primaryStage.show();
+    	
+    }
+    
+       
 }
