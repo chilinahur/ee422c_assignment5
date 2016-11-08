@@ -537,52 +537,81 @@ public abstract class Critter {
 		
 	}
 	
-	/**
-	 * Displays the critters on the board
-	 */
-	public static void displayWorld() {		
-		String[] topBorder = new String[Params.world_width];
+    private static double sceneWidth = 1024;
+    private static double sceneHeight = 768;
+
+    private static int n = Params.world_width;
+    private static int m = Params.world_height;
+
+    static double gridWidth = sceneWidth / n;
+    static double gridHeight = sceneHeight / m;
+	
+    public static class MyNode extends StackPane {
+
+        public MyNode(String name, double x, double y, double width, double height) {
+
+            Rectangle rectangle = new Rectangle(width, height);
+            rectangle.setStroke(Color.BLACK);
+            rectangle.setFill(Color.PINK);
+
+            Label label = new Label(name);
+
+            setTranslateX(x);
+            setTranslateY(y);
+
+            getChildren().addAll( rectangle, label);
+
+        }
+
+    }
+	
+	public static boolean checkPopulation(int x, int y){
 		
-		topBorder[0] = "+";
-		topBorder[Params.world_width - 1] = "+";
-		
-		for(int i = 1; i < Params.world_width - 1; i++){
-			topBorder[i] = "-";
-		}
-		
-		String[][] world = new String[Params.world_height][Params.world_width];
-		
-		for(int i = 0; i < Params.world_height; i++){
-			for(int j = 0; j < Params.world_width; j++){
-				world[i][j] = " ";
+		for(Critter critter: population){
+			if(critter.x_coord == x && critter.y_coord == y){
+				return true;
 			}
 		}
 		
-		for(Critter critter : population){
-			world[critter.y_coord][critter.x_coord] = critter.toString();
+		return false;
+		
+	}
+    
+	static Stage secStage = new Stage();
+	
+	public static void displayWorld() {
+		
+		Group root = new Group();
+		MyNode[][] world = new MyNode[n][m];
+		
+		for( int i = 0; i < n; i++) {
+            for( int j = 0; j < m; j++) {
+            	
+            	if(!checkPopulation(j, i)){
+            		world[i][j] = new MyNode( "", j * gridWidth, i * gridHeight, gridWidth, gridHeight);
+            	}
+            	else{
+            		
+            		for(Critter critter: population){
+            			if(critter.x_coord == j && critter.y_coord == i){
+            				world[i][j] = new MyNode( critter.toString(), j * gridWidth, i * gridHeight, gridWidth, gridHeight);
+            			}
+                    }
+            	
+            	}
+            }
 		}
 		
-		System.out.println();
-		System.out.print("+");
-		for(int j = 0; j < Params.world_width; j++){
-			System.out.print("-");
-		}
-		System.out.println("+");
-		
-		for(int i = 0; i < Params.world_height; i++){
-			
-			System.out.print("|");
-			for(int j = 0; j < Params.world_width; j++){
-				System.out.print(world[i][j]);
-			}
-			System.out.println("|");
+		for( int i = 0; i < n; i++) {
+            for( int j = 0; j < m; j++) {
+            	root.getChildren().add(world[i][j]);
+            }
 		}
 		
-		System.out.print("+");
-		for(int j = 0; j < Params.world_width; j++){
-			System.out.print("-");
-		}
-		System.out.println("+");
+        Scene scene2 = new Scene( root, sceneWidth, sceneHeight);
+
+        secStage.setScene(scene2);
+        secStage.show();
 		
 	}
 	
