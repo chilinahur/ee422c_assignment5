@@ -22,11 +22,18 @@ import java.io.*;
 import java.lang.reflect.Method;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -66,34 +73,21 @@ public class Main extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception{
-    
+    	List <String> names = new ArrayList<String>();
+    	for(int i = 0;  i< myPackage.)
+    	if(Class.forName(myPackage + "." value).isInstance("Critter"))
+    		names.add(value);
+    	
     	Stage secStage = new Stage();
     	GridPane layout2 = new GridPane();
     	Scene scene2 = new Scene(layout2, Params.world_width * 10, Params.world_height * 10);
+    
+    	secStage.setTitle("World");
     	
     	secStage.setScene(scene2);
     	secStage.show();
     	
-    	/*
-    	try {			
-
-			grid.setGridLinesVisible(true);
-
-			Scene scene2 = new Scene(grid, 500, 500);
-			secStage.setScene(scen,e2);
-			
-			secStage.show();
-			
-			// Paints the icons.
-			Painter.paint();
-			
-		} 
-    	
-    	catch(Exception e) {
-			e.printStackTrace();		
-		}
-    	*/
-    	
+   	
     	primaryStage.setTitle("Critters GUI");
     	
     	Button show = new Button();
@@ -107,12 +101,49 @@ public class Main extends Application {
     	Button stats = new Button();
     	stats.setText("stats");
     	
-    	TextField stepNum = new TextField();
+    	 Slider stepNum = new Slider(1, 1000, 1);
+    	 stepNum.setPrefWidth(200);
+    	 stepNum.setShowTickMarks(true);
+    	 stepNum.setSnapToTicks(true);
+    	 stepNum.setMajorTickUnit(100);
+    	 stepNum.setMinorTickCount(100);
+    	 stepNum.setBlockIncrement(1);
+         final Label stepNumVal = new Label("1");
+         stepNum.valueProperty().addListener(new ChangeListener<Object>() {
+
+             @Override
+             public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+                 stepNumVal.textProperty().setValue(
+                         String.valueOf((int) stepNum.getValue()));
+
+             }
+         });
+    	
+    	//TextField stepNum = new TextField();
     	
     	TextField makeType = new TextField();
     	makeType.setPrefWidth(75);
-    	TextField makeNum = new TextField();
-    	makeNum.setPrefWidth(75);
+    	
+    	
+    	
+    	
+   	 Slider makeNum = new Slider(1, 1000, 1);
+   	 makeNum.setPrefWidth(200);
+   	 makeNum.setShowTickMarks(true);
+   	 makeNum.setSnapToTicks(true);
+   	 makeNum.setMajorTickUnit(100);
+   	 makeNum.setMinorTickCount(100);
+   	 makeNum.setBlockIncrement(1);
+        final Label makeNumVal = new Label("1");
+        makeNum.valueProperty().addListener(new ChangeListener<Object>() {
+
+            @Override
+            public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+                makeNumVal.textProperty().setValue(
+                        String.valueOf((int) makeNum.getValue()));
+
+            }
+        });
 
     	TextField seedNum = new TextField();
     	
@@ -135,17 +166,8 @@ public class Main extends Application {
 			
     		@Override
     		public void handle(ActionEvent event){
-    			
-    			int num = 0;
-        		String input = stepNum.getText();
-        		
-        		try{
-        			num = Integer.parseInt(input);
-        		}
-        		
-        		catch(Exception e){
-        			Critter.worldTimeStep();
-        		}
+
+    			int num = (int) stepNum.getValue();
         		
         		for(int i = 0; i < num; i++){
         			Critter.worldTimeStep();
@@ -187,13 +209,11 @@ public class Main extends Application {
     		public void handle(ActionEvent event){
     			
     		
-	    		int num = 0;
 	    		String className = makeType.getText();
-	    		String number = makeNum.getText();
+	    		int num = (int) makeNum.getValue();
 	    		
 	    		try{
-	    			num = Integer.parseInt(number);
-	    			
+   			
 	    			if(num < 0) throw new Exception();
 	    			
 	        		if(num == 0)
@@ -245,6 +265,8 @@ public class Main extends Application {
     	
     	stepNum.setLayoutX(150);
     	stepNum.setLayoutY(100);
+    	stepNumVal.setLayoutX(375);
+    	stepNumVal.setLayoutY(100);
     	
     	step.setLayoutX(50);
     	step.setLayoutY(100);
@@ -261,24 +283,25 @@ public class Main extends Application {
     	makeType.setLayoutX(150);
     	makeType.setLayoutY(200);
     	
-    	makeNum.setLayoutX(250);
-    	makeNum.setLayoutY(200);
+    	makeNum.setLayoutX(150);
+    	makeNum.setLayoutY(250);
+    	makeNumVal.setLayoutX(375);
+    	makeNumVal.setLayoutY(250);
     	
     	stats.setLayoutX(50);
-    	stats.setLayoutY(250);
+    	stats.setLayoutY(300);
     	
     	statsType.setLayoutX(150);
-    	statsType.setLayoutY(250);
+    	statsType.setLayoutY(300);
     	
     	
-    	layout.getChildren().addAll(show, step, seed, make, stats, stepNum, makeType,
-    	makeNum, seedNum, statsType);
+    	layout.getChildren().addAll(show, step, seed, make, stats, stepNum, stepNumVal, makeType,
+    	makeNum, makeNumVal, seedNum, statsType);
     	
     	Scene scene = new Scene(layout, 500, 500);
     	primaryStage.setScene(scene);
     	primaryStage.show();
     	
     }
-    
-       
+
 }
